@@ -1,0 +1,42 @@
+<html>
+<title>GSA Google Form Cauldron</title>
+
+<body>
+    <h3>Paste Google Form Code Here:</h3>
+    <textarea style="width:100%;height:400px" id="google-form-input"></textarea>
+    <br>
+    <button id="boil">Boil it Down</button>
+    <h3>Boiled HTML</h3>
+    <div style="background-color:#ddd;width:500px;overflow:hidden;font-family:monospace;padding:20px" id="html-output"></div>
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script>
+
+    var $cauldron;
+
+    $(function() {
+
+        var formElements = '<input type="submit" value="Submit"><iframe id="form-target" name="form-target" style="width:0px; height:0px; border:0px;"></iframe><div class="form-thank-you well" style="position:absolute;top:0;left:0;width:100%;height:100%;background:#ddd;display:table-cell;text-align:center;padding:10px;display:none;"><strong>Thank You.</strong><br>Your response has been submitted.<br><button type="reset" class="form-dismiss">Dismiss</button></div><script>$(function(){$("body").on("click",".google-form input[type=submit]",function(){$(".google-form .form-thank-you").show();});$("body").on("click","button.form-dismiss",function(){$(".google-form .form-thank-you").hide();});});<\/script>';
+
+        $('#boil').click(function() {
+            console.log('boiling')
+            $cauldron = $('<div>' + $('#google-form-input').val() + '</div>');
+            $cauldron.find('form').removeAttr('id style target').attr('style', 'position:relative');
+            $cauldron.find('.ss-form-entry').unwrap().unwrap().removeClass('ss-form-entry').addClass('form-entry');
+            $cauldron.find('.ss-item').eq(0).unwrap();
+            $cauldron.find('.ss-secondary-text,.ss-navigate,.error-message,.required-message').remove();
+            $cauldron.find('.ss-entry').unwrap();
+            $cauldron.find('form .form-entry *').removeAttr('class dir title aria-label');
+            $cauldron.find('form label').each(function() {
+                $(this).text($(this).find('div').text());
+            });
+            $cauldron.find('textarea').attr('rows', '6').attr('cols', '60').before('<br>');
+            $cauldron.find('form').attr('onsubmit', "this.action='" + $cauldron.find('form').attr('action') + "'").removeAttr('action').attr('target', 'form-target').append(formElements).wrap("<div class='google-form'></div>");
+            $('#html-output').text($cauldron.html())
+
+        })
+
+    });
+    </script>
+</body>
+
+</html>
